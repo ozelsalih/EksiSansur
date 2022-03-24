@@ -1,4 +1,10 @@
-from app.app import app
+from app.app import app, scheduler
+from tools import database_maker
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    @scheduler.task('cron', id='update_database', hour=23, minute=50)
+    def updade_database():
+        database_maker.create_database()
+        
+    scheduler.start()
+    app.run()
